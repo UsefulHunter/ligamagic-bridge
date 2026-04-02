@@ -13,25 +13,25 @@ Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em 
 
 ### Pré-requisitos
 - Node.js 18+
-- npm
+- Yarn
 
 ### Instalação
 
 ```bash
-npm install
+yarn install
 ```
 
 ### Build
 
 ```bash
 # Build único (para produção)
-npm run build
+yarn build
 
 # Watch mode (desenvolvimento — recompila ao salvar)
-npm run dev
+yarn dev
 
 # Checagem de tipos sem build
-npm run typecheck
+yarn typecheck
 ```
 
 Os arquivos compilados ficam em `dist/`.
