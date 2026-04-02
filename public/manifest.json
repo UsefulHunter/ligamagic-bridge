@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "MTG Bridge",
+  "version": "0.1.0",
+  "description": "Adiciona links rápidos para a LigaMagic em páginas do Scryfall e Moxfield",
+  "permissions": ["activeTab"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://scryfall.com/card/*/*"],
+      "js": ["content/scryfall.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://moxfield.com/*"],
+      "js": ["content/moxfield.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://edhrec.com/*"],
+      "js": ["content/edhrec.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTG Bridge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 280px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #1a1a2e;
+      color: #e8e0d0;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px 12px;
+      background: #16213e;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .header-logo {
+      width: 28px;
+      height: 28px;
+      background: #c8932a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #c8932a;
+      letter-spacing: 0.5px;
+    }
+
+    .header-subtitle {
+      font-size: 10px;
+      color: #8899aa;
+      margin-top: 1px;
+    }
+
+    .content {
+      padding: 14px 16px;
+    }
+
+    /* Estado: página não suportada */
+    .state-unsupported {
+      text-align: center;
+      padding: 10px 0 4px;
+    }
+
+    .state-unsupported p {
+      font-size: 12px;
+      color: #8899aa;
+      line-height: 1.5;
+    }
+
+    .supported-sites {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .site-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: #16213e;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #aabbcc;
+    }
+
+    .site-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c8932a;
+      flex-shrink: 0;
+    }
+
+    /* Estado: carta detectada */
+    .state-card {
+      display: none;
+    }
+
+    .card-detected-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8899aa;
+      margin-bottom: 6px;
+    }
+
+    .card-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e8e0d0;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .btn-liga {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px;
+      background: #c8932a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-liga:hover { background: #a87420; }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      background: transparent;
+      color: #8899aa;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-copy:hover { border-color: #c8932a; color: #c8932a; }
+
+    .btn-copy.copied { color: #4caf7d; border-color: #4caf7d; }
+
+    .footer {
+      padding: 8px 16px 12px;
+      font-size: 10px;
+      color: #445566;
+      text-align: center;
+      border-top: 1px solid #0f3460;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-logo">⚔</div>
+    <div>
+      <div class="header-title">MTG Bridge</div>
+      <div class="header-subtitle">Scryfall & Moxfield → LigaMagic</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Estado padrão: nenhuma carta detectada -->
+    <div class="state-unsupported" id="state-unsupported">
+      <p>Navegue até a página de uma carta no Scryfall ou Moxfield.</p>
+      <div class="supported-sites">
+        <div class="site-badge"><span class="dot"></span>scryfall.com/card/…</div>
+        <div class="site-badge"><span class="dot"></span>moxfield.com (painel de carta)</div>
+      </div>
+    </div>
+
+    <!-- Estado: carta detectada -->
+    <div class="state-card" id="state-card">
+      <div class="card-detected-label">Carta detectada</div>
+      <div class="card-name" id="card-name-display">—</div>
+      <a class="btn-liga" id="btn-open" href="#" target="_blank" rel="noopener noreferrer">
+        ⚔ Ver na LigaMagic
+      </a>
+      <button class="btn-copy" id="btn-copy">
+        📋 Copiar link
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer">v0.1.0 — uso pessoal</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
