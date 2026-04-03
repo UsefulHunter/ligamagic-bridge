@@ -130,7 +130,8 @@ function tryInject(): void {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.title = `Buscar "${cardName}" na LigaMagic`;
-    link.innerHTML = `<img src="${ICON_URL}" alt="LM"> LM`;
+    link.setAttribute("aria-label", `Buscar "${cardName}" na LigaMagic`);
+    link.innerHTML = `<img src="${ICON_URL}" alt="LigaMagic"> LigaMagic`;
 
     // Adiciona como terceira coluna, após os links existentes
     container.appendChild(link);
