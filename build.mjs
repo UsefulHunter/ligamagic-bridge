@@ -13,6 +13,7 @@ const entryPoints = [
   { in: "src/content/scryfall.ts",  out: "content/scryfall" },
   { in: "src/content/moxfield.ts",  out: "content/moxfield" },
   { in: "src/content/edhrec.ts",    out: "content/edhrec" },
+  { in: "src/content/archidekt.ts", out: "content/archidekt" },
   { in: "src/popup/popup.ts",       out: "popup" },
 ];
 

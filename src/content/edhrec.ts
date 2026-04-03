@@ -25,7 +25,7 @@ const CSS = `
     justify-content: center;
     padding: 6px 10px;
     border-radius: 4px;
-    background: #c8932a;
+    background: #ff5a00;
     border: none;
     cursor: pointer;
     text-decoration: none;
@@ -41,12 +41,7 @@ const CSS = `
   }
 `;
 
-/** Ícone SVG minimalista para LigaMagic (estilo similar aos outros ícones) */
-const LIGA_ICON_SVG = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="10" cy="10" r="8.5" stroke="white" stroke-width="1.5" fill="none"/>
-  <text x="10" y="14.5" text-anchor="middle" font-size="12" font-weight="700"
-        font-family="Arial, sans-serif" fill="white">L</text>
-</svg>`;
+const ICON_URL = chrome.runtime.getURL("icons/icon48.png");
 
 let observer: MutationObserver | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -179,7 +174,7 @@ function tryInject(): void {
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   link.title = `Buscar "${cardName}" na LigaMagic`;
-  link.innerHTML = LIGA_ICON_SVG;
+  link.innerHTML = `<img src="${ICON_URL}" alt="LigaMagic" width="20" height="20" style="border-radius:3px">`;
 
   // Cria wrapper div para consistência com a estrutura existente
   const wrapper = document.createElement("div");
@@ -200,6 +195,8 @@ function tryInject(): void {
 // Observer & navigation
 // ---------------------------------------------------------------------------
 
+let lastUrl = location.href;
+
 function debouncedTryInject(): void {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
@@ -214,39 +211,21 @@ function debouncedTryInject(): void {
 function startObserver(): void {
   if (observer) observer.disconnect();
 
-  observer = new MutationObserver(debouncedTryInject);
+  observer = new MutationObserver(() => {
+    if (location.href !== lastUrl) {
+      lastUrl = location.href;
+    }
+    debouncedTryInject();
+  });
   observer.observe(document.body, {
     childList: true,
     subtree: true,
   });
 }
 
-/**
- * Monitora mudanças de URL na SPA do EDHREC (Next.js usa client-side navigation).
- */
-function watchNavigation(): void {
-  const originalPush = history.pushState.bind(history);
-  const originalReplace = history.replaceState.bind(history);
-
-  history.pushState = (...args) => {
-    originalPush(...args);
-    setTimeout(debouncedTryInject, 500);
-  };
-
-  history.replaceState = (...args) => {
-    originalReplace(...args);
-    setTimeout(debouncedTryInject, 500);
-  };
-
-  window.addEventListener("popstate", () => {
-    setTimeout(debouncedTryInject, 500);
-  });
-}
-
 function init(): void {
   tryInject();
   startObserver();
-  watchNavigation();
 }
 
 if (document.readyState === "loading") {
