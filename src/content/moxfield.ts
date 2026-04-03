@@ -186,6 +186,8 @@ function tryInjectCardPage(): void {
   }
 }
 
+let lastUrl = location.href;
+
 function debouncedTryInject(): void {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
@@ -196,7 +198,13 @@ function debouncedTryInject(): void {
 function startObserver(): void {
   if (observer) observer.disconnect();
 
-  observer = new MutationObserver(debouncedTryInject);
+  observer = new MutationObserver(() => {
+    if (location.href !== lastUrl) {
+      lastUrl = location.href;
+      removeLigaMagicButton();
+    }
+    debouncedTryInject();
+  });
 
   observer.observe(document.body, {
     childList: true,
@@ -204,33 +212,9 @@ function startObserver(): void {
   });
 }
 
-/**
- * Monitora mudanças de URL em SPAs (pushState / replaceState / popstate).
- * Quando a rota muda, limpa botões e tenta injetar novamente.
- */
-function watchNavigation(): void {
-  const originalPush = history.pushState.bind(history);
-  const originalReplace = history.replaceState.bind(history);
-
-  history.pushState = (...args) => {
-    originalPush(...args);
-    setTimeout(() => { removeLigaMagicButton(); tryInject(); }, 300);
-  };
-
-  history.replaceState = (...args) => {
-    originalReplace(...args);
-    setTimeout(() => { removeLigaMagicButton(); tryInject(); }, 300);
-  };
-
-  window.addEventListener("popstate", () => {
-    setTimeout(() => { removeLigaMagicButton(); tryInject(); }, 300);
-  });
-}
-
 function init(): void {
   tryInject();
   startObserver();
-  watchNavigation();
 }
 
 if (document.readyState === "loading") {

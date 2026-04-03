@@ -142,6 +142,8 @@ function tryInject(): void {
 // Observer & navigation
 // ---------------------------------------------------------------------------
 
+let lastUrl = location.href;
+
 function debouncedTryInject(): void {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
@@ -156,36 +158,21 @@ function debouncedTryInject(): void {
 function startObserver(): void {
   if (observer) observer.disconnect();
 
-  observer = new MutationObserver(debouncedTryInject);
+  observer = new MutationObserver(() => {
+    if (location.href !== lastUrl) {
+      lastUrl = location.href;
+    }
+    debouncedTryInject();
+  });
   observer.observe(document.body, {
     childList: true,
     subtree: true,
   });
 }
 
-function watchNavigation(): void {
-  const originalPush = history.pushState.bind(history);
-  const originalReplace = history.replaceState.bind(history);
-
-  history.pushState = (...args) => {
-    originalPush(...args);
-    setTimeout(debouncedTryInject, 500);
-  };
-
-  history.replaceState = (...args) => {
-    originalReplace(...args);
-    setTimeout(debouncedTryInject, 500);
-  };
-
-  window.addEventListener("popstate", () => {
-    setTimeout(debouncedTryInject, 500);
-  });
-}
-
 function init(): void {
   tryInject();
   startObserver();
-  watchNavigation();
 }
 
 if (document.readyState === "loading") {

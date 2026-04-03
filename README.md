@@ -1,12 +1,15 @@
 # MTG Bridge 🃏
 
-Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em páginas do **Scryfall**, **Moxfield** e **EDHREC**.
+Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em páginas do **Scryfall**, **Moxfield**, **EDHREC** e **Archidekt**.
+
+> **Aviso:** Este projeto é de uso pessoal e não possui qualquer envolvimento jurídico, comercial ou institucional com a marca, nome ou serviços da **LigaMagic**. Todos os nomes e marcas mencionados pertencem aos seus respectivos proprietários.
 
 ## Como funciona
 
 - **Scryfall** — Em qualquer página de carta (`scryfall.com/card/...`), um botão **"Ver na LigaMagic"** é injetado automaticamente.
 - **Moxfield** — O botão aparece no painel de detalhes ao clicar em uma carta.
 - **EDHREC** — Um ícone da LigaMagic é adicionado à barra de links externos (outbound bar) nas páginas de comandantes e cartas, ao lado de Cardsphere, Archidekt, etc.
+- **Archidekt** — Um link para a LigaMagic é adicionado na barra de preços de cada carta, ao lado de Card Kingdom e TCGplayer.
 - **Popup** — O popup da extensão (ícone na barra do browser) mostra a carta detectada na aba atual e permite abrir ou copiar o link.
 
 ## Setup (desenvolvimento)
@@ -56,6 +59,7 @@ mtg-bridge/
 │   │   ├── scryfall.ts     ← injeta botão nas páginas de carta do Scryfall
 │   │   ├── moxfield.ts     ← observer SPA para o Moxfield
 │   │   └── edhrec.ts       ← injeta ícone na outbound bar do EDHREC
+│   │   └── archidekt.ts    ← injeta link na barra de preços do Archidekt
 │   ├── popup/
 │   │   ├── popup.ts        ← lógica do popup
 │   │   └── popup.html      ← interface do popup
@@ -79,11 +83,11 @@ mtg-bridge/
 - [x] Scryfall: injeção de botão na página da carta
 - [x] Moxfield: observer SPA + injeção de botão
 - [x] EDHREC: ícone na outbound bar (comandantes e cartas)
+- [x] Archidekt: link LigaMagic na barra de preços
 - [x] Popup com nome da carta detectada + link + copiar
 - [x] Encoding correto de nomes especiais (apóstrofos, barras `//`)
 
 ### v0.2 (próximos passos)
-- [ ] Ícones da extensão (PNG 16/48/128)
 - [ ] Testes unitários para `normalizeCardName` (casos edge)
 - [ ] Suporte ao Gatherer (requer resolução de `multiverseid` → nome via API Scryfall)
 - [ ] Tabela de mapeamento de edições (Scryfall code → LigaMagic code)
@@ -105,3 +109,9 @@ A LigaMagic aceita o parâmetro `card=` com espaços substituídos por `+` e car
 
 ### Nomenclatura de edições
 A LigaMagic usa códigos próprios que **nem sempre coincidem** com os do Scryfall. Na v0.1, a busca é feita **apenas pelo nome** da carta, o que retorna todas as edições disponíveis — suficiente para uso diário. O mapeamento de edições será implementado na v0.2.
+
+---
+
+## Aviso legal
+
+Este projeto é de uso pessoal e **não possui qualquer envolvimento jurídico, comercial ou institucional** com a marca, nome ou serviços da **LigaMagic**. Todos os nomes, marcas e logotipos mencionados pertencem aos seus respectivos proprietários. O uso do favicon da LigaMagic nesta extensão é meramente referencial, para facilitar a identificação visual pelo usuário.
