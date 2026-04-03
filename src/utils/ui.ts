@@ -12,7 +12,7 @@ const CSS = `
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #c8932a;
+    background: #ff5a00;
     color: #fff !important;
     border: none;
     border-radius: 6px;
@@ -27,7 +27,7 @@ const CSS = `
     line-height: 1;
   }
   .mtg-bridge-btn:hover {
-    background: #a87420;
+    background: #d94d00;
     transform: translateY(-1px);
   }
   .mtg-bridge-btn:active {
@@ -38,11 +38,7 @@ const CSS = `
   }
 `;
 
-const LIGA_ICON = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="7" cy="7" r="6" stroke="white" stroke-width="1.5"/>
-  <path d="M4.5 9.5L7 4.5L9.5 9.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M5.5 7.5H8.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-</svg>`;
+const ICON_URL = chrome.runtime.getURL("icons/icon48.png");
 
 /**
  * Injeta o botão "Ver na LigaMagic" em um elemento container.
@@ -71,7 +67,7 @@ export function injectLigaMagicButton(
   btn.target = "_blank";
   btn.rel = "noopener noreferrer";
   btn.title = `Buscar "${cardName}" na LigaMagic`;
-  btn.innerHTML = `${LIGA_ICON} Ver na LigaMagic`;
+  btn.innerHTML = `<img src="${ICON_URL}" alt="LigaMagic" width="14" height="14" style="border-radius:2px"> Ver na LigaMagic`;
 
   container.appendChild(btn);
   return btn;
