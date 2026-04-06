@@ -85,9 +85,7 @@ function tryInject(): void {
  * O nome é obtido via data-hash presente no link "Flip Card Image".
  */
 function tryInjectDropdown(): void {
-  const dropdown = document.querySelector<HTMLElement>(
-    ".dropdown-menu.show.dropdown-menu-isolate"
-  );
+  const dropdown = document.querySelector<HTMLElement>(".dropdown-menu.show");
   if (!dropdown) return;
 
   // Já injetado neste dropdown?
@@ -123,14 +121,8 @@ function tryInjectDropdown(): void {
 
   if (!cardName) return;
 
-  // Localiza a coluna esquerda do dropdown
-  const leftColumn = dropdown.querySelector<HTMLElement>(
-    ".d-inline-block:not(.dropdown-column-divider)"
-  );
-  if (!leftColumn) return;
-
-  // Encontra o link "Add to Collection"
-  const items = leftColumn.querySelectorAll<HTMLElement>("a.dropdown-item");
+  // Encontra o link "Add to Collection" dentro do dropdown atual
+  const items = dropdown.querySelectorAll<HTMLElement>("a.dropdown-item");
   let addToCollectionLink: HTMLElement | null = null;
   for (const item of Array.from(items)) {
     if (item.textContent?.trim() === "Add to Collection") {
