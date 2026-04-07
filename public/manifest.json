@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MTG Bridge",
   "version": "0.1.0",
-  "description": "Uso pessoal. Adiciona links rápidos para a LigaMagic em páginas do Scryfall, Moxfield, EDHREC e Archidekt. Sem vínculo com a marca LigaMagic.",
+  "description": "Adiciona links para LigaMagic em Scryfall, Moxfield, EDHREC e Archidekt. Uso comunitário. Sem vínculo com a marca.",
   "permissions": ["activeTab"],
   "icons": {
     "16": "icons/icon16.png",
