@@ -44,6 +44,11 @@
       "matches": ["https://edhtop16.com/*"],
       "js": ["content/edhtop16.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://topdeck.gg/*"],
+      "js": ["content/topdeck.js"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [

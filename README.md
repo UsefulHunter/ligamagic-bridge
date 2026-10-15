@@ -11,6 +11,8 @@ Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em 
 - **EDHREC** — Um botão da LigaMagic é adicionado à barra de links externos nas páginas de comandantes e cartas, ao lado de Cardsphere, Archidekt, etc.
 - **Archidekt** — Um link para a LigaMagic é adicionado na barra de preços de cada carta, ao lado de Card Kingdom e TCGplayer.
 - **EDHTop16** — Nas decklists, um botão "Ver na LigaMagic" acompanha a carta exibida no painel de preview (lateral esquerda).
+- **TopDeck.gg** — Nas decklists, os links das cartas (que levavam ao TCGplayer) passam a abrir a busca na LigaMagic, tanto na grade quanto na visualização em texto.
+- **Menu de contexto** — Clique direito numa carta no Scryfall, EDHREC, EDHTop16 ou TopDeck.gg → **"Ver na LigaMagic"**. Em qualquer site, com um texto selecionado → **"Buscar \"…\" na LigaMagic"**. (Moxfield e Archidekt têm menu próprio nas cartas e ficam de fora.)
 - **Popup** — O popup da extensão (ícone na barra do browser) mostra a carta detectada na aba atual e permite abrir ou copiar o link.
 
 ## Setup (desenvolvimento)
@@ -62,6 +64,7 @@ mtg-bridge/
 │   │   └── edhrec.ts       ← injeta ícone na outbound bar do EDHREC
 │   │   └── archidekt.ts    ← injeta link na barra de preços do Archidekt
 │   │   └── edhtop16.ts     ← botão no painel de preview do EDHTop16
+│   │   └── topdeck.ts      ← reescreve os links de carta do TopDeck.gg
 │   ├── popup/
 │   │   ├── popup.ts        ← lógica do popup
 │   │   └── popup.html      ← interface do popup
@@ -87,6 +90,8 @@ mtg-bridge/
 - [x] EDHREC: ícone na outbound bar (comandantes e cartas)
 - [x] Archidekt: link LigaMagic na barra de preços
 - [x] EDHTop16: botão no painel de preview
+- [x] TopDeck.gg: links das cartas apontam para a LigaMagic
+- [x] Menu de contexto: "Ver na LigaMagic" (carta sob o cursor) e busca do texto selecionado
 - [x] Popup com nome da carta detectada + link + copiar
 - [x] Encoding correto de nomes especiais (apóstrofos, barras `//`)
 
