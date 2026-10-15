@@ -14,6 +14,7 @@ const entryPoints = [
   { in: "src/content/moxfield.ts",  out: "content/moxfield" },
   { in: "src/content/edhrec.ts",    out: "content/edhrec" },
   { in: "src/content/archidekt.ts", out: "content/archidekt" },
+  { in: "src/content/edhtop16.ts",  out: "content/edhtop16" },
   { in: "src/popup/popup.ts",       out: "popup" },
 ];
 
