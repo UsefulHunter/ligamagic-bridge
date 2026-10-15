@@ -13,6 +13,7 @@
  */
 
 import { injectLigaMagicButton } from "../utils/ui";
+import { registerContextCardResolver } from "../utils/contextMenu";
 
 const PREVIEW_SELECTOR = 'aside[aria-label="Card preview"]';
 
@@ -51,12 +52,26 @@ function findPreviewNameBlock(preview: Element): Element | null {
   return nameBlock?.tagName === "DIV" ? nameBlock : null;
 }
 
+function getPreviewCardName(preview: Element): string | null {
+  const nameBlock = findPreviewNameBlock(preview);
+  return nameBlock?.firstElementChild?.textContent?.trim() || null;
+}
+
+/** Nome da carta sob o cursor (menu de contexto): linha da lista ou preview */
+function getContextCardName(target: Element): string | null {
+  const row = target.closest<HTMLAnchorElement>(ROW_SELECTOR);
+  if (row) return getRowCardName(row);
+
+  const preview = target.closest(PREVIEW_SELECTOR);
+  return preview ? getPreviewCardName(preview) : null;
+}
+
 function injectPanelButton(): void {
   const preview = document.querySelector(PREVIEW_SELECTOR);
   if (!preview) return;
 
   const nameBlock = findPreviewNameBlock(preview);
-  const cardName = nameBlock?.firstElementChild?.textContent?.trim();
+  const cardName = getPreviewCardName(preview);
   if (!nameBlock || !cardName) return;
 
   let wrapper = preview.querySelector(`.${PANEL_WRAPPER_CLASS}`);
@@ -105,6 +120,7 @@ function startObserver(): void {
 }
 
 function init(): void {
+  registerContextCardResolver(getContextCardName);
   tryInject();
   startObserver();
 }

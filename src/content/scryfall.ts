@@ -11,6 +11,7 @@
  */
 
 import { injectLigaMagicButton } from "../utils/ui";
+import { registerContextCardResolver } from "../utils/contextMenu";
 
 function getCardName(): string | null {
   // Tenta o h1 principal da página de carta individual
@@ -86,6 +87,9 @@ function init(): void {
 
   injectLigaMagicButton(container, cardName);
 }
+
+// Menu de contexto: a página de carta tem uma única carta
+registerContextCardResolver(() => getCardName());
 
 // Aguarda o DOM estar pronto (content script roda em document_idle, mas por segurança)
 if (document.readyState === "loading") {
