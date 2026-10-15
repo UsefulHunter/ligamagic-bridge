@@ -32,9 +32,13 @@ async function getCardFromActiveTab(): Promise<CardInfo> {
             "h1.card-text-title, .card-text-title"
           );
           if (!el) return null;
+          // Nome oficial; ignora o nome alternativo (Secret Lair / Universes Beyond)
+          const nameSpan = el.querySelector(".card-text-card-name");
+          if (nameSpan?.textContent?.trim()) return nameSpan.textContent.trim();
           // Exclui o custo de mana ({3}{R}) que fica dentro do mesmo <h1>
           const clone = el.cloneNode(true) as HTMLElement;
           clone.querySelector(".card-text-mana-cost")?.remove();
+          clone.querySelector(".card-text-flavor-name")?.remove();
           return clone.textContent?.trim() ?? null;
         },
       });
