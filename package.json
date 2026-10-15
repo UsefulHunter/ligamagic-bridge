@@ -1,7 +1,7 @@
 {
   "name": "mtg-bridge",
-  "version": "0.1.0",
-  "description": "Extensão Chrome/Brave: Scryfall & Moxfield → LigaMagic",
+  "version": "0.2.0",
+  "description": "Extensão Chrome/Brave: links para a LigaMagic em sites de Magic",
   "private": true,
   "scripts": {
     "dev": "node build.mjs --watch",
