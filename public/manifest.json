@@ -36,12 +36,17 @@
       "matches": ["https://archidekt.com/*"],
       "js": ["content/archidekt.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://edhtop16.com/*"],
+      "js": ["content/edhtop16.js"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": ["icons/icon48.png"],
-      "matches": ["https://scryfall.com/*", "https://moxfield.com/*", "https://edhrec.com/*", "https://archidekt.com/*"]
+      "matches": ["https://scryfall.com/*", "https://moxfield.com/*", "https://edhrec.com/*", "https://archidekt.com/*", "https://edhtop16.com/*"]
     }
   ]
 }
