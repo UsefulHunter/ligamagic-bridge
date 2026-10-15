@@ -13,5 +13,6 @@
     "@types/chrome": "^0.0.268",
     "esbuild": "^0.24.0",
     "typescript": "^5.5.0"
-  }
+  },
+  "packageManager": "pnpm@12.11.2"
 }
