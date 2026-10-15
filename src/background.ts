@@ -1,10 +1,11 @@
 /**
  * Service worker da extensão: itens no menu de contexto (clique direito).
  *
- *   - "Ver na LigaMagic": nos sites suportados, abre a carta sob o cursor.
- *     O título é fixo porque o Chrome monta o menu antes de o content script
- *     conseguir atualizá-lo; a carta é resolvida só no clique, lendo o nome
- *     que o content script gravou no <html> no último "contextmenu".
+ *   - "Ver na LigaMagic": nos sites suportados (Scryfall, EDHREC, EDHTop16,
+ *     TopDeck.gg), abre a carta sob o cursor. O título é fixo porque o Chrome
+ *     monta o menu antes de o content script conseguir atualizá-lo; a carta é
+ *     resolvida só no clique, lendo o nome que o content script gravou no
+ *     <html> no último "contextmenu".
  *     Moxfield e Archidekt ficam de fora: eles substituem o menu nativo nas
  *     cartas por um menu próprio.
  *
@@ -21,6 +22,7 @@ const CARD_SITES = [
   "https://scryfall.com/*",
   "https://edhrec.com/*",
   "https://edhtop16.com/*",
+  "https://topdeck.gg/*",
 ];
 
 chrome.runtime.onInstalled.addListener(() => {
