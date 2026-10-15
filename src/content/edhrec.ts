@@ -13,6 +13,7 @@
  */
 
 import { buildLigaMagicUrl } from "../utils/ligamagic";
+import { registerContextCardResolver } from "../utils/contextMenu";
 
 const BUTTON_CLASS = "mtg-bridge-edhrec-btn";
 const STYLE_ID = "mtg-bridge-edhrec-style";
@@ -66,6 +67,19 @@ function getCardName(): string | null {
   if (!raw) return null;
 
   return raw.replace(/\s*\([^)]*\)\s*$/, "").trim() || null;
+}
+
+/**
+ * Nome da carta sob o cursor (menu de contexto). Cada carta das listas é um
+ * <a href="/cards/..."> com o nome em <span class="<hash>_name">; fora delas,
+ * usa a carta/comandante da página.
+ */
+function getContextCardName(target: Element): string | null {
+  const tile =
+    target.closest('a[href^="/cards/"]') ??
+    target.closest('[class*="_cardFront"]');
+  const name = tile?.querySelector('[class*="_name"]')?.textContent?.trim();
+  return name || getCardName();
 }
 
 // ---------------------------------------------------------------------------
@@ -168,6 +182,7 @@ function startObserver(): void {
 }
 
 function init(): void {
+  registerContextCardResolver(getContextCardName);
   tryInject();
   startObserver();
 }

@@ -16,6 +16,7 @@ const entryPoints = [
   { in: "src/content/archidekt.ts", out: "content/archidekt" },
   { in: "src/content/edhtop16.ts",  out: "content/edhtop16" },
   { in: "src/popup/popup.ts",       out: "popup" },
+  { in: "src/background.ts",        out: "background" },
 ];
 
 const buildOptions = {
