@@ -10,12 +10,16 @@
  * apoiamos apenas em estrutura e atributos semânticos: o painel é o
  * <aside aria-label="Card preview">, com o nome no primeiro <div> de texto
  * logo após a imagem.
+ *
+ * As linhas da lista são cobertas pelo menu de contexto ("Ver na LigaMagic").
  */
 
 import { injectLigaMagicButton } from "../utils/ui";
 import { registerContextCardResolver } from "../utils/contextMenu";
 
 const PREVIEW_SELECTOR = 'aside[aria-label="Card preview"]';
+/** Linhas da lista: <a href="https://manapool.com/card/..."><span>Nome</span>...</a> */
+const ROW_SELECTOR = 'a[href*="manapool.com/card/"]';
 
 const PANEL_WRAPPER_CLASS = "mtg-bridge-edhtop16-panel";
 const STYLE_ID = "mtg-bridge-edhtop16-style";
@@ -55,6 +59,10 @@ function findPreviewNameBlock(preview: Element): Element | null {
 function getPreviewCardName(preview: Element): string | null {
   const nameBlock = findPreviewNameBlock(preview);
   return nameBlock?.firstElementChild?.textContent?.trim() || null;
+}
+
+function getRowCardName(row: HTMLAnchorElement): string | null {
+  return row.querySelector("span")?.textContent?.trim() || null;
 }
 
 /** Nome da carta sob o cursor (menu de contexto): linha da lista ou preview */
