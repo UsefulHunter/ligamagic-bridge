@@ -18,13 +18,21 @@ function getCardName(): string | null {
     "h1.card-text-title, .card-text-title"
   );
   if (h1) {
-    // O <h1> contém filhos como <abbr class="card-text-mana-cost">{3}{R}</abbr>.
-    // Precisamos só do texto do nome, ignorando o custo de mana.
+    // O <h1> contém o nome em <span class="card-text-card-name">, além do custo
+    // de mana e, em Secret Lair / Universes Beyond, do nome alternativo em
+    // <span class="card-text-flavor-name"> (ex: "Shovel of Decapitation").
+    // A LigaMagic só conhece o nome oficial, então lemos apenas o card-name.
+    const nameSpan = h1.querySelector(".card-text-card-name");
+    const fromSpan = nameSpan?.textContent?.trim();
+    if (fromSpan) return fromSpan;
+
+    // Layout antigo: o nome era texto solto ao lado do custo de mana.
     const manaCost = h1.querySelector(".card-text-mana-cost");
     if (manaCost) {
       // Clona o nó, remove o custo de mana, e pega o texto restante
       const clone = h1.cloneNode(true) as HTMLElement;
       clone.querySelector(".card-text-mana-cost")?.remove();
+      clone.querySelector(".card-text-flavor-name")?.remove();
       const name = clone.textContent?.trim();
       if (name) return name;
     }

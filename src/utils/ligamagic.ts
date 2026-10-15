@@ -28,7 +28,8 @@ const LIGA_CARD_TYPE = "1";
  */
 export function normalizeCardName(name: string): string {
   // Cartas divididas: Scryfall usa " // ", LigaMagic usa o lado A apenas na busca geral
-  const splitName = name.split(" // ")[0].trim();
+  // Colapsa quebras de linha/espaços repetidos vindos do textContent do DOM
+  const splitName = name.replace(/\s+/g, " ").split(" // ")[0].trim();
 
   // encodeURIComponent trata todos os especiais, depois revertemos espaços para "+"
   return encodeURIComponent(splitName).replace(/%20/g, "+");
