@@ -4,12 +4,12 @@
  * Injeta um botão "LigaMagic" na barra de links externos (OutboundBar),
  * ao lado de Cardsphere, Archidekt, Moxfield, Scryfall, etc.
  *
- * Estratégias para extrair o nome da carta:
- *   1. Alt text da imagem principal da carta (mais confiável)
- *   2. Texto do <h3> no cabeçalho, removendo sufixos como "(Commander)"
+ * Layout atual (2026): a barra é uma <ul class="<hash>_list"> com um
+ * <li><a class="<hash>_link <hash>_link--<site>"> por site, e o nome da
+ * carta fica em <h1><span class="<hash>_headingMain">.
  *
- * O EDHREC é uma SPA Next.js com CSS Modules (classes com hash),
- * então usamos seletores com prefixo [class*="..."] para robustez.
+ * O EDHREC usa CSS Modules com prefixo de hash que muda a cada deploy,
+ * então os seletores se apoiam apenas nos sufixos estáveis das classes.
  */
 
 import { buildLigaMagicUrl } from "../utils/ligamagic";
@@ -17,16 +17,20 @@ import { buildLigaMagicUrl } from "../utils/ligamagic";
 const BUTTON_CLASS = "mtg-bridge-edhrec-btn";
 const STYLE_ID = "mtg-bridge-edhrec-style";
 
-/** CSS que replica o estilo dos botões da OutboundBar do EDHREC */
+/** Sites conhecidos da barra, usados para localizá-la pelo modificador da classe */
+const KNOWN_SITES = ["cardsphere", "archidekt", "moxfield", "scryfall"];
+
+/** CSS que acompanha o estilo dos blocos da OutboundBar do EDHREC */
 const CSS = `
   .${BUTTON_CLASS} {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 10px;
-    border-radius: 4px;
+    height: 100%;
+    padding: 6px 4px;
+    min-width: 40px;
+    box-sizing: border-box;
     background: #ff5a00;
-    border: none;
     cursor: pointer;
     text-decoration: none;
     transition: filter 0.15s;
@@ -34,10 +38,10 @@ const CSS = `
   .${BUTTON_CLASS}:hover {
     filter: brightness(1.15);
   }
-  .${BUTTON_CLASS} img,
-  .${BUTTON_CLASS} svg {
+  .${BUTTON_CLASS} img {
     height: 20px;
-    width: auto;
+    width: 20px;
+    border-radius: 3px;
   }
 `;
 
@@ -51,46 +55,17 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 // ---------------------------------------------------------------------------
 
 /**
- * Extrai o nome da carta a partir da imagem principal (atributo alt).
- * Mais confiável que o h3, pois não inclui sufixos como "(Commander)".
- */
-function getCardNameFromImage(): string | null {
-  // A imagem de carta no EDHREC usa classes com prefixo "CardImage_"
-  const img = document.querySelector<HTMLImageElement>(
-    'img[class*="CardImage_"][alt]'
-  );
-  if (img?.alt?.trim()) return img.alt.trim();
-
-  // Fallback: qualquer imagem com src de cards.scryfall.io
-  const scryfallImg = document.querySelector<HTMLImageElement>(
-    'img[src*="cards.scryfall.io"][alt]'
-  );
-  if (scryfallImg?.alt?.trim()) return scryfallImg.alt.trim();
-
-  return null;
-}
-
-/**
- * Extrai o nome da carta do cabeçalho <h3>, removendo sufixos entre parênteses.
+ * Extrai o nome da carta do cabeçalho <h1>, removendo sufixos entre parênteses.
  * Ex: "The Ur-Dragon (Commander)" → "The Ur-Dragon"
  */
-function getCardNameFromHeader(): string | null {
-  // O header usa classes com prefixo "CoolHeader_"
-  const h3 = document.querySelector<HTMLElement>(
-    'h3, [class*="CoolHeader_"] h3'
-  );
-  if (!h3?.textContent) return null;
-
-  // Remove sufixo entre parênteses: "(Commander)", "(Card)", etc.
-  const raw = h3.textContent.trim();
-  return raw.replace(/\s*\([^)]*\)\s*$/, "").trim() || null;
-}
-
-/**
- * Retorna o nome da carta da página atual, tentando múltiplas estratégias.
- */
 function getCardName(): string | null {
-  return getCardNameFromImage() ?? getCardNameFromHeader();
+  const heading =
+    document.querySelector<HTMLElement>('h1 [class*="_headingMain"]') ??
+    document.querySelector<HTMLElement>("h1");
+  const raw = heading?.textContent?.trim();
+  if (!raw) return null;
+
+  return raw.replace(/\s*\([^)]*\)\s*$/, "").trim() || null;
 }
 
 // ---------------------------------------------------------------------------
@@ -98,44 +73,16 @@ function getCardName(): string | null {
 // ---------------------------------------------------------------------------
 
 /**
- * Localiza o container da OutboundBar (barra com links para sites externos).
- * Tenta por classe CSS com prefixo, depois por heurística de links.
+ * Localiza a lista da OutboundBar a partir de um link com modificador de site
+ * conhecido (ex: "<hash>_link--archidekt").
  */
-function findOutboundBar(): Element | null {
-  // 1. Seletor por prefixo de classe (CSS Modules do EDHREC)
-  const bar = document.querySelector('[class*="OutboundBar_container"]');
-  if (bar) return bar;
-
-  // 2. Heurística: container que possui links para sites externos conhecidos
-  const knownHrefs = [
-    "cardsphere.com",
-    "archidekt.com",
-    "commanderspellbook.com",
-    "moxfield.com",
-  ];
-  const allLinks = document.querySelectorAll<HTMLAnchorElement>("a[href]");
-  for (const link of Array.from(allLinks)) {
-    if (knownHrefs.some((domain) => link.href.includes(domain))) {
-      // Sobe até o container que agrupa todos os botões
-      let parent = link.parentElement;
-      while (parent && parent !== document.body) {
-        // Verifica se este container tem múltiplos links externos
-        const childLinks = parent.querySelectorAll("a[target='_blank']");
-        if (childLinks.length >= 3) return parent;
-        parent = parent.parentElement;
-      }
-    }
+function findOutboundBar(): HTMLUListElement | null {
+  for (const site of KNOWN_SITES) {
+    const link = document.querySelector(`ul a[class*="_link--${site}"]`);
+    const list = link?.closest("ul");
+    if (list) return list;
   }
-
   return null;
-}
-
-/**
- * Encontra o wrapper de um botão existente na outbound bar para clonar a estrutura.
- * Retorna o primeiro div wrapper filho (ex: div.OutboundBar_button__*).
- */
-function findButtonWrapper(bar: Element): Element | null {
-  return bar.querySelector('[class*="OutboundBar_button"]');
 }
 
 function injectCSS(): void {
@@ -161,34 +108,31 @@ function tryInject(): void {
   if (existing?.title === `Buscar "${cardName}" na LigaMagic`) return;
 
   // Remove botão anterior (caso a carta tenha mudado)
-  existing?.parentElement?.remove();
+  existing?.closest("li")?.remove();
 
   injectCSS();
 
-  const url = buildLigaMagicUrl({ cardName });
-
-  // Cria o link com estilo compatível
   const link = document.createElement("a");
-  link.className = `btn ${BUTTON_CLASS}`;
-  link.href = url;
+  link.className = BUTTON_CLASS;
+  link.href = buildLigaMagicUrl({ cardName });
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   link.title = `Buscar "${cardName}" na LigaMagic`;
-  link.innerHTML = `<img src="${ICON_URL}" alt="LigaMagic" width="20" height="20" style="border-radius:3px">`;
+  link.innerHTML = `<img src="${ICON_URL}" alt="LigaMagic">`;
 
-  // Cria wrapper div para consistência com a estrutura existente
-  const wrapper = document.createElement("div");
+  // Reaproveita a classe base dos links da barra (ex: "<hash>_link") para
+  // herdar dimensões; o modificador de site fica de fora.
+  const baseClass = bar
+    .querySelector("a")
+    ?.className.split(/\s+/)
+    .find((c) => c.endsWith("_link"));
+  if (baseClass) link.classList.add(baseClass);
 
-  // Tenta copiar a classe do wrapper existente para manter a mesma aparência
-  const existingWrapper = findButtonWrapper(bar);
-  if (existingWrapper) {
-    wrapper.className = existingWrapper.className;
-  }
+  const item = document.createElement("li");
+  item.appendChild(link);
 
-  wrapper.appendChild(link);
-
-  // Insere como primeiro filho (à esquerda de Cardsphere)
-  bar.insertBefore(wrapper, bar.firstChild);
+  // Insere como primeiro item (à esquerda de Cardsphere)
+  bar.insertBefore(item, bar.firstChild);
 }
 
 // ---------------------------------------------------------------------------

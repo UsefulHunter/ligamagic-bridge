@@ -8,7 +8,7 @@ Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em 
 
 - **Scryfall** — Em qualquer página de carta (`scryfall.com/card/...`), um botão **"Ver na LigaMagic"** é injetado automaticamente.
 - **Moxfield** — O botão aparece no painel de detalhes ao clicar em uma carta.
-- **EDHREC** — Um ícone da LigaMagic é adicionado à barra de links externos (outbound bar) nas páginas de comandantes e cartas, ao lado de Cardsphere, Archidekt, etc.
+- **EDHREC** — Um botão da LigaMagic é adicionado à barra de links externos nas páginas de comandantes e cartas, ao lado de Cardsphere, Archidekt, etc.
 - **Archidekt** — Um link para a LigaMagic é adicionado na barra de preços de cada carta, ao lado de Card Kingdom e TCGplayer.
 - **Popup** — O popup da extensão (ícone na barra do browser) mostra a carta detectada na aba atual e permite abrir ou copiar o link.
 
