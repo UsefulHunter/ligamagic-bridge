@@ -31,7 +31,9 @@ function getNameForContainer(container: Element): string | null {
   //    Extrai o hash da imagem exibida e busca o nome correspondente no deck list
   const sidebar = container.closest("aside, .deckview-image-container");
   if (sidebar) {
-    const img = sidebar.querySelector<HTMLImageElement>("img.deckview-image");
+    const img =
+      sidebar.querySelector<HTMLImageElement>("img.deckview-image.front") ??
+      sidebar.querySelector<HTMLImageElement>("img.deckview-image");
     if (img?.src) {
       const match = img.src.match(/\/card-([A-Za-z0-9]+)-/);
       if (match) {
@@ -190,7 +192,16 @@ function debouncedTryInject(): void {
 function startObserver(): void {
   if (observer) observer.disconnect();
 
-  observer = new MutationObserver(() => {
+  observer = new MutationObserver((mutations) => {
+    // Mudanças de "src" só interessam nas imagens da sidebar; as demais
+    // (lazy-load de imagens do deck, etc.) são ignoradas.
+    const relevant = mutations.some(
+      (m) =>
+        m.type === "childList" ||
+        (m.target as Element).classList?.contains("deckview-image")
+    );
+    if (!relevant) return;
+
     if (location.href !== lastUrl) {
       lastUrl = location.href;
       removeLigaMagicButton();
@@ -198,9 +209,13 @@ function startObserver(): void {
     debouncedTryInject();
   });
 
+  // No hover de uma carta o Moxfield troca apenas o "src" das imagens da
+  // sidebar, sem alterar a árvore; por isso observamos também esse atributo.
   observer.observe(document.body, {
     childList: true,
     subtree: true,
+    attributes: true,
+    attributeFilter: ["src"],
   });
 }
 
