@@ -5,9 +5,10 @@
  *
  * No TopDeck.gg cada carta da lista é um link para o TCGplayer, tanto na
  * visualização em grade (<a><img alt="Nome"></a>) quanto em texto
- * (<a>1 Nome</a>). Em vez de injetar botões, reescrevemos o href desses links
- * para a busca da LigaMagic: o clique (normal, do meio ou com Ctrl) e a barra
- * de status passam a apontar para a LigaMagic.
+ * (<a><span>1</span><span>Nome</span></a>). Em vez de injetar botões,
+ * reescrevemos o href desses links para a busca da LigaMagic: o clique
+ * (normal, do meio ou com Ctrl) e a barra de status passam a apontar para
+ * a LigaMagic.
  *
  * O site usa Tailwind, sem classes semânticas; por isso nos apoiamos apenas
  * no domínio do link.
@@ -22,16 +23,23 @@ const REWRITTEN_ATTR = "data-mtg-bridge-card";
 let observer: MutationObserver | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
+const QUANTITY_REGEX = /^\d+x?$/;
+
 /**
- * Nome da carta de um link: alt da imagem (grade) ou texto sem a quantidade
- * inicial (texto, ex: "1 Phyrexian Walker").
+ * Nome da carta de um link: alt da imagem (grade) ou, na visualização em
+ * texto, o primeiro <span> que não seja a quantidade
+ * (<span>1</span><span>Phyrexian Walker</span>).
  */
 function getLinkCardName(link: HTMLAnchorElement): string | null {
   const alt = link.querySelector("img[alt]")?.getAttribute("alt")?.trim();
   if (alt) return alt;
 
-  const text = link.textContent?.replace(/\s+/g, " ").trim();
-  return text?.replace(/^\d+x?\s+/, "") || null;
+  for (const span of Array.from(link.querySelectorAll("span"))) {
+    const text = span.textContent?.trim();
+    if (text && !QUANTITY_REGEX.test(text)) return text;
+  }
+
+  return null;
 }
 
 function rewriteLinks(): void {
