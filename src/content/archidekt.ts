@@ -7,6 +7,9 @@
  * O nome da carta é extraído do link do Card Kingdom (parâmetro filter[name])
  * ou do alt text da imagem da carta (fallback).
  *
+ * Também adiciona "Ver na LigaMagic" ao menu próprio que o Archidekt abre no
+ * clique direito de uma carta (ele substitui o menu nativo do navegador).
+ *
  * O Archidekt é uma SPA React, então usamos MutationObserver para
  * detectar cartas renderizadas dinamicamente.
  */
@@ -14,6 +17,7 @@
 import { buildLigaMagicUrl } from "../utils/ligamagic";
 
 const LINK_CLASS = "mtg-bridge-archidekt-link";
+const MENU_ITEM_CLASS = "mtg-bridge-archidekt-menu-item";
 const STYLE_ID = "mtg-bridge-archidekt-style";
 const ICON_URL = chrome.runtime.getURL("icons/icon48.png");
 
@@ -36,6 +40,14 @@ const CSS = `
     width: 1em;
     border-radius: 2px;
     vertical-align: middle;
+  }
+  /* Mesmo tamanho/espaçamento dos ícones SVG dos itens nativos do menu */
+  .${MENU_ITEM_CLASS} img {
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    border-radius: 2px;
+    vertical-align: -2px;
   }
 `;
 
@@ -138,6 +150,52 @@ function tryInject(): void {
   });
 }
 
+/**
+ * Injeta "Ver na LigaMagic" no menu de contexto próprio do Archidekt, logo
+ * após "View card page". O nome vem do cabeçalho do menu, e o item reaproveita
+ * a estrutura do link "View card page" (ícone + texto) para herdar o estilo.
+ */
+function tryInjectContextMenu(): void {
+  const menu = document.querySelector('[class*="contextMenu_menuInterior"]');
+  if (!menu) return;
+
+  const cardName = menu
+    .querySelector('[class*="menu_header"]')
+    ?.textContent?.trim();
+  if (!cardName) return;
+
+  const existing = menu.querySelector<HTMLAnchorElement>(`.${MENU_ITEM_CLASS}`);
+  if (existing?.title === `Buscar "${cardName}" na LigaMagic`) return;
+  existing?.remove();
+
+  injectCSS();
+
+  const item = document.createElement("a");
+  item.className = MENU_ITEM_CLASS;
+  item.href = buildLigaMagicUrl({ cardName });
+  item.target = "_blank";
+  item.rel = "noopener noreferrer";
+  item.title = `Buscar "${cardName}" na LigaMagic`;
+  item.innerHTML = `<img src="${ICON_URL}" alt="">Ver na LigaMagic`;
+
+  // Os itens nativos fecham o menu ao clicar; o Archidekt fecha com Escape.
+  // Despacha depois do clique para não interferir na abertura da nova aba.
+  item.addEventListener("click", () => {
+    setTimeout(() => {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true })
+      );
+    }, 0);
+  });
+
+  // Após "View card page" (único <a> do menu); senão, ao final dos itens
+  const anchor = menu.querySelector(`a:not(.${MENU_ITEM_CLASS})`);
+  const lastButton = Array.from(menu.querySelectorAll("button")).pop();
+  const ref = anchor ?? lastButton;
+  if (ref) ref.after(item);
+  else menu.appendChild(item);
+}
+
 // ---------------------------------------------------------------------------
 // Observer & navigation
 // ---------------------------------------------------------------------------
@@ -153,6 +211,13 @@ function debouncedTryInject(): void {
       /* não quebrar a página host */
     }
   }, 200);
+
+  // O menu de contexto aparece no clique direito: reage sem o debounce longo
+  try {
+    tryInjectContextMenu();
+  } catch (_) {
+    /* não quebrar a página host */
+  }
 }
 
 function startObserver(): void {
