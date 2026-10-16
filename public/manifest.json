@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MTG Bridge",
   "version": "0.2.0",
-  "description": "Links para a LigaMagic no Scryfall, Moxfield, EDHREC, Archidekt, EDHTop16 e TopDeck.gg. Uso comunitário. Sem vínculo com a marca.",
+  "description": "Busque na LigaMagic as cartas de Magic que você vê em sites de decks e cartas, com um clique. Sem vínculo com a LigaMagic.",
   "permissions": ["activeTab", "contextMenus", "scripting"],
   "background": {
     "service_worker": "background.js"
