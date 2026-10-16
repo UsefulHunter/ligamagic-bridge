@@ -9,10 +9,10 @@ Extensão para Chrome/Brave que adiciona links rápidos para a **LigaMagic** em 
 - **Scryfall** — Em qualquer página de carta (`scryfall.com/card/...`), um botão **"Ver na LigaMagic"** é injetado automaticamente.
 - **Moxfield** — O botão aparece no painel de detalhes ao clicar em uma carta.
 - **EDHREC** — Um botão da LigaMagic é adicionado à barra de links externos nas páginas de comandantes e cartas, ao lado de Cardsphere, Archidekt, etc.
-- **Archidekt** — Um link para a LigaMagic é adicionado na barra de preços de cada carta, ao lado de Card Kingdom e TCGplayer.
+- **Archidekt** — Um link para a LigaMagic é adicionado na barra de preços de cada carta, ao lado de Card Kingdom e TCGplayer, e o item "Ver na LigaMagic" aparece no menu de clique direito do próprio Archidekt.
 - **EDHTop16** — Nas decklists, um botão "Ver na LigaMagic" acompanha a carta exibida no painel de preview (lateral esquerda).
 - **TopDeck.gg** — Nas decklists, os links das cartas (que levavam ao TCGplayer) passam a abrir a busca na LigaMagic, tanto na grade quanto na visualização em texto.
-- **Menu de contexto** — Clique direito numa carta no Scryfall, EDHREC, EDHTop16 ou TopDeck.gg → **"Ver na LigaMagic"**. Em qualquer site, com um texto selecionado → **Buscar "…" na LigaMagic**. (Moxfield e Archidekt têm menu próprio nas cartas e ficam de fora.)
+- **Menu de contexto** — Clique direito numa carta no Scryfall, EDHREC, EDHTop16 ou TopDeck.gg → **"Ver na LigaMagic"**. Em qualquer site, com um texto selecionado → **Buscar "…" na LigaMagic**. (Moxfield e Archidekt têm menu próprio nas cartas, onde a extensão adiciona o item "Ver na LigaMagic".)
 - **Popup** — O popup da extensão (ícone na barra do browser) mostra a carta detectada na aba atual e permite abrir ou copiar o link.
 
 ## Setup (desenvolvimento)
